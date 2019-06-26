@@ -1,0 +1,40 @@
+.pd-search-form {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    padding: 20px 30px;
+}
+.pd-breadcrumb{
+    padding: 10px 5px;
+    font-size: 15px;
+}
+
+.pd-search-form .el-form-item {
+    margin-bottom: 0px;
+}
+.el-table th{
+    background-color: #f5f7fa ;
+}
+.pd-list-table-header{
+
+}
+.pd-pagination{
+    padding: 5px 10px;
+    background-color:  #f5f7fa;
+}
+
+@media screen and (min-width: 1680px) {
+    .pd-edit-dialog .el-dialog {
+        width: 30%;
+    }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1680px) {
+    .pd-edit-dialog .el-dialog {
+        width: 40%;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .pd-edit-dialog .el-dialog {
+        width: 50%;
+    }
+}

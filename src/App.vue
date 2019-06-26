@@ -1,29 +1,30 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
+    <Index :menusList="menusList"></Index>
   </div>
 </template>
 
-<style lang="less">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+  import Index from "@/components/Index.vue";
+
+  export default {
+    data() {
+      return {
+        menusList: [{"icon": "el-icon-s-home", "title": "首页", "url": "/"},
+          {"icon": "el-icon-s-grid", "title": "应用管理", "url": "/app/index"},
+          {"icon": "el-icon-grape", "title": "环境管理", "url": "/env/index"},
+          {"icon": "el-icon-c-scale-to-original", "title": "业务线", "url": "/business-line/index"}
+        ],
+        /*{ "icon": "el-icon-grape", "title": "环境管理", "subMenus": [{ "title": "环境首页", "url": "/env/index"}]}]*/
+      }
+    },
+    components: {
+      Index
     }
+  };
+</script>
+<style lang="less">
+  body {
+    margin: 0px;
   }
-}
 </style>
