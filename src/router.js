@@ -30,6 +30,30 @@ export default new Router({
       name: "business-line-index",
       component: () =>
         import("./views/business-line/Index.vue")
+    },
+    {
+      path: "/user/index",
+      name: "user-index",
+      component: () =>
+        import("./views/user/Index.vue")
+    },
+    {
+      path: "/role/index",
+      name: "role-index",
+      component: () =>
+        import("./views/role/Index.vue")
+    },
+    {
+      path: "/permission/index",
+      name: "permission-index",
+      component: () =>
+        import("./views/permission/Index.vue")
+    },
+    {
+      path: "/group/index",
+      name: "group-index",
+      component: () =>
+        import("./views/group/Index.vue")
     }
   ]
 });
