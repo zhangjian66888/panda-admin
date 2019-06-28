@@ -19,7 +19,7 @@
                 @selection-change="handleSelectionChange"
                 @sort-change="handleSortChange">
         <el-table-column type="selection" width="55"/>
-        <el-table-column prop="roleName" label="角色" width="120" sortable="custom" />
+        <el-table-column prop="roleName" label="角色" width="120" sortable="custom"/>
         <el-table-column prop="description" label="描述" width="200"/>
         <el-table-column prop="createTime" label="注册时间" width="200"/>
         <el-table-column prop="updateTime" label="更新时间" width="200"/>
@@ -45,6 +45,36 @@
       <el-form :model="editDto" ref="editDto" :rules="editRules" label-width="100px" label-position="right">
         <el-form-item label="角色名" prop="roleName">
           <el-input v-model="editDto.roleName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="业务线" prop="businessLineId">
+          <el-select v-model="editDto.businessLineId" @change="businessLineChange" filterable>
+            <el-option
+                v-for="item in businessLines"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="应用" prop="appCode">
+          <el-select v-model="editDto.appCode" filterable>
+            <el-option
+                v-for="item in apps"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="环境" prop="envCode">
+          <el-select v-model="editDto.envCode" filterable>
+            <el-option
+                v-for="item in envs"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input v-model="editDto.description" autocomplete="off"></el-input>
@@ -76,10 +106,20 @@
         multipleSelection: [],
         editRules: {
           roleName: [{required: true, trigger: 'blur'}],
+          businessLineId: [{required: true, trigger: 'blur'}],
+          appCode: [{required: true, trigger: 'blur'}],
+          envCode: [{required: true, trigger: 'blur'}],
         },
         pagination: {current: 1, pageSize: 20, total: 0},
         sortInfo: {sortField: null, sortOrder: null},
+        businessLines: [],
+        apps: [],
+        envs: [],
       }
+    },
+    created: function () {
+      _selectItem.businessLineSelectItem(this);
+      _selectItem.envSelectItem(this);
     },
     methods: {
       search() {
@@ -123,6 +163,9 @@
       },
       remove(id) {
         _util.removeById(this, id);
+      },
+      businessLineChange(val) {
+        _selectItem.appSelectItem(this, {businessLineId: val});
       }
     }
   }

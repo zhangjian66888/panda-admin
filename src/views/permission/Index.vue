@@ -15,7 +15,14 @@
         <el-input v-model="searchDto.url"></el-input>
       </el-form-item>
       <el-form-item label="类型">
-        <el-input v-model="searchDto.type"></el-input>
+        <el-select v-model="searchDto.type" clearable filterable>
+          <el-option
+              v-for="item in permissionTypes"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查询</el-button>
@@ -28,7 +35,7 @@
                 @selection-change="handleSelectionChange"
                 @sort-change="handleSortChange">
         <el-table-column type="selection" width="55"/>
-        <el-table-column prop="name" label="权限名称" width="120" sortable="custom" />
+        <el-table-column prop="name" label="权限名称" width="120" sortable="custom"/>
         <el-table-column prop="showName" label="显示名称" width="120"/>
         <el-table-column prop="url" label="地址" width="120"/>
         <el-table-column prop="type" label="类型" width="80"/>
@@ -61,21 +68,69 @@
         <el-form-item label="显示名称" prop="showName">
           <el-input v-model="editDto.showName" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="业务线" prop="businessLineId">
+          <el-select v-model="editDto.businessLineId" @change="businessLineChange" filterable>
+            <el-option
+                v-for="item in businessLines"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="应用" prop="appCode">
+          <el-select v-model="editDto.appCode" filterable>
+            <el-option
+                v-for="item in apps"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="地址" prop="url">
           <el-input v-model="editDto.url" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="方法" prop="method">
-          <el-input v-model="editDto.method" autocomplete="off"></el-input>
+          <el-select v-model="editDto.method">
+            <el-option
+                v-for="item in permissionMethods"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-input v-model="editDto.type" autocomplete="off"></el-input>
+          <el-select v-model="editDto.type" >
+            <el-option
+                v-for="item in permissionTypes"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="行为" prop="action">
-          <el-input v-model="editDto.action" autocomplete="off"></el-input>
+          <el-select v-model="editDto.action" clearable filterable>
+            <el-option
+                v-for="item in actions"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="菜单类型" prop="menuType">
-        <el-input v-model="editDto.menuType" autocomplete="off"></el-input>
-      </el-form-item>
+          <el-select v-model="editDto.menuType">
+            <el-option
+                v-for="item in menuTypes"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="父菜单" prop="parentId">
           <el-input v-model="editDto.parentId" autocomplete="off"></el-input>
         </el-form-item>
@@ -121,10 +176,27 @@
           type: [{required: true, trigger: 'blur'}],
           action: [{required: true, trigger: 'blur'}],
           menuType: [{required: true, trigger: 'blur'}],
+          businessLineId: [{required: true, trigger: 'blur'}],
+          appCode: [{required: true, trigger: 'blur'}],
+
         },
         pagination: {current: 1, pageSize: 20, total: 0},
         sortInfo: {sortField: null, sortOrder: null},
+        permissionMethods: [],
+        permissionTypes: [],
+        actions: [],
+        menuTypes: [],
+        businessLines: [],
+        apps: [],
       }
+    },
+    created: function () {
+      _selectItem.staticSelectItem(this, "permissionMethod");
+      _selectItem.staticSelectItem(this, "permissionType");
+      _selectItem.staticSelectItem(this, "action");
+      _selectItem.staticSelectItem(this, "menuType");
+      _selectItem.businessLineSelectItem(this);
+      //_selectItem.appSelectItem(this);
     },
     methods: {
       search() {
@@ -168,6 +240,9 @@
       },
       remove(id) {
         _util.removeById(this, id);
+      },
+      businessLineChange(val) {
+        _selectItem.appSelectItem(this, {businessLineId: val});
       }
     }
   }

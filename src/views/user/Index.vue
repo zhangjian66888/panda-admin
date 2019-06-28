@@ -25,9 +25,9 @@
                 @selection-change="handleSelectionChange"
                 @sort-change="handleSortChange">
         <el-table-column type="selection" width="55"/>
-        <el-table-column prop="username" label="用户名" width="120" sortable="custom" />
+        <el-table-column prop="username" label="用户名" width="120" sortable="custom"/>
         <el-table-column prop="zhName" label="中文名" width="120"/>
-        <el-table-column prop="mobile" label="手机" width="120" sortable="custom" />
+        <el-table-column prop="mobile" label="手机" width="120" sortable="custom"/>
         <el-table-column prop="email" label="邮箱" width="120"/>
         <el-table-column prop="createTime" label="注册时间" width="200"/>
         <el-table-column prop="updateTime" label="更新时间" width="200"/>
@@ -63,6 +63,16 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="editDto.email" type="email" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="类型" prop="businessLineId">
+          <el-select v-model="editDto.userType" clearable filterable>
+            <el-option
+                v-for="item in userTypes"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeDaialog">取 消</el-button>
@@ -93,10 +103,15 @@
           zhName: [{required: true, trigger: 'blur'}],
           mobile: [{required: true, trigger: 'blur'}],
           email: [{required: true, trigger: 'blur'}],
+          userType: [{required: true, trigger: 'blur'}],
         },
         pagination: {current: 1, pageSize: 20, total: 0},
         sortInfo: {sortField: null, sortOrder: null},
+        userTypes: [],
       }
+    },
+    created: function () {
+      _selectItem.staticSelectItem(this, "userType");
     },
     methods: {
       search() {
@@ -140,7 +155,7 @@
       },
       remove(id) {
         _util.removeById(this, id);
-      }
+      },
     }
   }
 </script>

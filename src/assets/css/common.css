@@ -2,7 +2,8 @@
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     padding: 20px 30px;
 }
-.pd-breadcrumb{
+
+.pd-breadcrumb {
     padding: 10px 5px;
     font-size: 15px;
 }
@@ -10,15 +11,18 @@
 .pd-search-form .el-form-item {
     margin-bottom: 0px;
 }
-.el-table th{
-    background-color: #f5f7fa ;
+
+.el-table th {
+    background-color: #f5f7fa;
 }
-.pd-list-table-header{
+
+.pd-list-table-header {
 
 }
-.pd-pagination{
+
+.pd-pagination {
     padding: 5px 10px;
-    background-color:  #f5f7fa;
+    background-color: #f5f7fa;
 }
 
 @media screen and (min-width: 1680px) {
@@ -37,4 +41,8 @@
     .pd-edit-dialog .el-dialog {
         width: 50%;
     }
+}
+
+.pd-edit-dialog .el-form-item__content > .el-input {
+    width: 80%;
 }
