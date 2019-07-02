@@ -5,9 +5,11 @@ import './assets/css/common.css'
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import PanelTag from './components/panelTag.vue'
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+Vue.component('pd-panel-tag', PanelTag);
 
 new Vue({
   router,

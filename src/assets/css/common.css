@@ -29,11 +29,17 @@
     .pd-edit-dialog .el-dialog {
         width: 35%;
     }
+    .pd-large-dialog .el-dialog {
+        width: 60%;
+    }
 }
 
 @media screen and (min-width: 1024px) and (max-width: 1680px) {
     .pd-edit-dialog .el-dialog {
         width: 40%;
+    }
+    .pd-edpd-large-dialogit-dialog .el-dialog {
+        width: 70%;
     }
 }
 
@@ -41,8 +47,12 @@
     .pd-edit-dialog .el-dialog {
         width: 50%;
     }
+    .pd-large-dialog .el-dialog {
+        width: 80%;
+    }
 }
 
 .pd-edit-dialog .el-form-item__content > .el-input {
     width: 80%;
 }
+

@@ -25,15 +25,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="名称">
-        <el-input v-model="searchDto.name"></el-input>
-      </el-form-item>
-      <el-form-item label="显示名称">
-        <el-input v-model="searchDto.showName"></el-input>
-      </el-form-item>
-      <el-form-item label="地址">
-        <el-input v-model="searchDto.url"></el-input>
-      </el-form-item>
+
       <el-form-item label="类型">
         <el-select v-model="searchDto.type" clearable filterable>
           <el-option
@@ -43,6 +35,15 @@
               :value="item.id"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="名称">
+        <el-input v-model="searchDto.name"></el-input>
+      </el-form-item>
+      <el-form-item label="显示名称">
+        <el-input v-model="searchDto.showName"></el-input>
+      </el-form-item>
+      <el-form-item label="地址">
+        <el-input v-model="searchDto.url"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查询</el-button>
@@ -55,10 +56,12 @@
                 @selection-change="handleSelectionChange"
                 @sort-change="handleSortChange">
         <el-table-column type="selection" width="55"/>
-        <el-table-column prop="name" label="权限名称" width="120" sortable="custom"/>
-        <el-table-column prop="showName" label="显示名称" width="120"/>
-        <el-table-column prop="url" label="地址" width="200"/>
-        <el-table-column prop="type" label="类型" width="100"/>
+        <el-table-column prop="businessLineName" label="业务线" width="150"/>
+        <el-table-column prop="appName" label="应用" width="100"/>
+        <el-table-column prop="name" label="权限名称" width="150" sortable="custom"/>
+        <el-table-column prop="showName" label="显示名称" width="100"/>
+        <!--<el-table-column prop="url" label="地址" width="200"/>-->
+        <el-table-column prop="typeShow" label="类型" width="100"/>
         <el-table-column prop="createTime" label="注册时间" width="200"/>
         <el-table-column prop="updateTime" label="更新时间" width="200"/>
         <el-table-column fixed="right" label="操作">

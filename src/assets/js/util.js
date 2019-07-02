@@ -130,12 +130,33 @@ function requestGet(vueObj, url, param = {}, successFun) {
   });
 }
 
+function requestPost(vueObj, url, param = {}, successFun) {
+  Reqwest({
+    url: _global.backUrl + url,
+    method: "post",
+    contentType: "application/json",
+    data: JSON.stringify(param),
+    type: "json"
+  }).then(data => {
+    if (data.code == 0) {
+      if (successFun) {
+        successFun(data.data);
+      }
+    } else {
+      vueObj.$message({
+        type: 'error', message: data.msg
+      });
+    }
+  });
+}
+
 export default {
   searching,
   showDetail,
   removeById,
   save,
-  requestGet
+  requestGet,
+  requestPost
 }
 
 
