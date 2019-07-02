@@ -5,6 +5,26 @@
       <el-breadcrumb-item>权限管理</el-breadcrumb-item>
     </el-breadcrumb>
     <el-form :inline="true" :model="searchDto" class="pd-search-form">
+      <el-form-item label="业务线">
+        <el-select v-model="searchDto.businessLineId" @change="businessLineChange"  clearable filterable>
+          <el-option
+              v-for="item in businessLines"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="应用">
+        <el-select v-model="searchDto.appCode" clearable filterable>
+          <el-option
+              v-for="item in apps"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="名称">
         <el-input v-model="searchDto.name"></el-input>
       </el-form-item>
@@ -37,15 +57,14 @@
         <el-table-column type="selection" width="55"/>
         <el-table-column prop="name" label="权限名称" width="120" sortable="custom"/>
         <el-table-column prop="showName" label="显示名称" width="120"/>
-        <el-table-column prop="url" label="地址" width="120"/>
-        <el-table-column prop="type" label="类型" width="80"/>
+        <el-table-column prop="url" label="地址" width="200"/>
+        <el-table-column prop="type" label="类型" width="100"/>
         <el-table-column prop="createTime" label="注册时间" width="200"/>
         <el-table-column prop="updateTime" label="更新时间" width="200"/>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
-            <el-button @click="showTokenDialog(scope.row.id)" type="text" size="small">token</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -61,13 +80,13 @@
       </el-pagination>
     </div>
     <el-dialog title="编辑框" :visible.sync="editDialogVisible" class="pd-edit-dialog" center>
-      <el-form :model="editDto" ref="editDto" :rules="editRules" label-width="100px" label-position="right">
-        <el-form-item label="权限名称" prop="name">
-          <el-input v-model="editDto.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="显示名称" prop="showName">
-          <el-input v-model="editDto.showName" autocomplete="off"></el-input>
-        </el-form-item>
+      <el-steps :active="editActive" simple style="margin-bottom: 20px">
+        <el-step title="步骤 1" icon="el-icon-edit"></el-step>
+        <el-step title="步骤 2" icon="el-icon-upload"></el-step>
+        <el-step title="步骤 3" icon="el-icon-picture"></el-step>
+      </el-steps>
+      <el-form :model="editDto" ref="editDto1" :rules="editRule1" v-show="editActive == 1"
+               label-width="100px" label-position="right">
         <el-form-item label="业务线" prop="businessLineId">
           <el-select v-model="editDto.businessLineId" @change="businessLineChange" filterable>
             <el-option
@@ -88,6 +107,14 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="权限名称" prop="name">
+          <el-input placeholder="请输入内容" v-model="editDto.name">
+            <template slot="prepend">ROLE_</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="显示名称" prop="showName">
+          <el-input v-model="editDto.showName" autocomplete="off"></el-input>
+        </el-form-item>
         <el-form-item label="地址" prop="url">
           <el-input v-model="editDto.url" autocomplete="off"></el-input>
         </el-form-item>
@@ -102,7 +129,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-select v-model="editDto.type" >
+          <el-select v-model="editDto.type">
             <el-option
                 v-for="item in permissionTypes"
                 :key="item.id"
@@ -111,6 +138,10 @@
             />
           </el-select>
         </el-form-item>
+      </el-form>
+
+      <el-form :model="editDto" ref="editDto2" :rules="editRule2" v-show="editActive == 2"
+               label-width="100px" label-position="right">
         <el-form-item label="行为" prop="action">
           <el-select v-model="editDto.action" clearable filterable>
             <el-option
@@ -122,7 +153,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="菜单类型" prop="menuType">
-          <el-select v-model="editDto.menuType">
+          <el-select v-model="editDto.menuType" @change="menuTypeChange">
             <el-option
                 v-for="item in menuTypes"
                 :key="item.id"
@@ -137,16 +168,22 @@
         <el-form-item label="图标" prop="menuIcon">
           <el-input v-model="editDto.menuIcon" autocomplete="off"></el-input>
         </el-form-item>
+      </el-form>
+
+      <el-form :model="editDto" ref="editDto" v-show="editActive == 3"
+               label-width="100px" label-position="right">
         <el-form-item label="排序" prop="menuSequence">
           <el-input v-model="editDto.menuSequence" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="editDto.description" autocomplete="off"></el-input>
+          <el-input type="textarea" rows="3" v-model="editDto.description" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeDaialog">取 消</el-button>
-        <el-button type="primary" @click="save" v-bind:disabled="saveBtnDisable">确 定</el-button>
+        <el-button @click="editPrev" v-show="editActive <= 3 && editActive > 1">上一步</el-button>
+        <el-button @click="editNext" v-show="editActive < 3">下一步</el-button>
+        <el-button type="primary" @click="save" v-show="editActive == 3 " v-bind:disabled="saveBtnDisable">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -171,15 +208,28 @@
         editRules: {
           name: [{required: true, trigger: 'blur'}],
           showName: [{required: true, trigger: 'blur'}],
+          businessLineId: [{required: true, trigger: 'blur'}],
+          appCode: [{required: true, trigger: 'blur'}],
           url: [{required: true, trigger: 'blur'}],
           method: [{required: true, trigger: 'blur'}],
           type: [{required: true, trigger: 'blur'}],
           action: [{required: true, trigger: 'blur'}],
           menuType: [{required: true, trigger: 'blur'}],
+        },
+        editRule1: {
+          name: [{required: true, trigger: 'blur'}],
+          showName: [{required: true, trigger: 'blur'}],
           businessLineId: [{required: true, trigger: 'blur'}],
           appCode: [{required: true, trigger: 'blur'}],
-
+          url: [{required: true, trigger: 'blur'}],
+          method: [{required: true, trigger: 'blur'}],
+          type: [{required: true, trigger: 'blur'}],
         },
+        editRule2: {
+          action: [{required: true, trigger: 'blur'}],
+          menuType: [{required: true, trigger: 'blur'}],
+        },
+        editActive: 1,
         pagination: {current: 1, pageSize: 20, total: 0},
         sortInfo: {sortField: null, sortOrder: null},
         permissionMethods: [],
@@ -232,17 +282,44 @@
         _util.showDetail(this, id);
       },
       closeDaialog() {
-        this.$refs['editDto'].resetFields();
+        this.editActive = 1;
+        this.$refs['editDto1'].resetFields();
+        this.$refs['editDto2'].resetFields();
         this.editDialogVisible = false;
       },
       save() {
         _util.save(this);
+      },
+      editPrev() {
+        this.editActive--;
+      },
+      editNext() {
+        if (this.editActive == 1 || this.editActive == 2) {
+          this.$refs['editDto' + this.editActive].validate((valid) => {
+            if (valid) {
+              this.editActive++;
+            }
+          });
+        }
       },
       remove(id) {
         _util.removeById(this, id);
       },
       businessLineChange(val) {
         _selectItem.appSelectItem(this, {businessLineId: val});
+      },
+      menuTypeChange(val) {
+        if (val == 1) {
+          this.$set(this.editRule2, 'menuIcon', [{required: true, trigger: 'blur'}]);
+          this.$set(this.editRule2, 'parentId', []);
+        } else if (val == 2) {
+          this.$set(this.editRule2, 'parentId', [{required: true, trigger: 'blur'}]);
+          this.$set(this.editRule2, 'menuIcon', []);
+        } else {
+          this.$set(this.editRule2, 'menuIcon', []);
+          this.$set(this.editRule2, 'parentId', []);
+        }
+        return false;
       }
     }
   }
