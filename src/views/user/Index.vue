@@ -35,10 +35,12 @@
                 @selection-change="handleSelectionChange"
                 @sort-change="handleSortChange">
         <el-table-column type="selection" width="55"/>
+        <el-table-column prop="businessLineName" label="业务线" width="120"/>
         <el-table-column prop="username" label="用户名" width="120" sortable="custom"/>
         <el-table-column prop="zhName" label="中文名" width="120"/>
         <el-table-column prop="mobile" label="手机" width="120" sortable="custom"/>
         <el-table-column prop="email" label="邮箱" width="200"/>
+        <el-table-column prop="userTypeShow" label="类型" width="100"/>
         <el-table-column prop="createTime" label="注册时间" width="200"/>
         <el-table-column prop="updateTime" label="更新时间" width="200"/>
         <el-table-column fixed="right" label="操作">
