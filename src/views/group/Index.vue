@@ -5,11 +5,8 @@
       <el-breadcrumb-item>用户组</el-breadcrumb-item>
     </el-breadcrumb>
     <el-form :inline="true" :model="searchDto" class="pd-search-form">
-      <el-form-item label="名称">
-        <el-input v-model="searchDto.groupName"></el-input>
-      </el-form-item>
       <el-form-item label="业务线">
-        <el-select v-model="searchDto.businessLine" clearable filterable>
+        <el-select v-model="searchDto.businessLineId" clearable filterable>
           <el-option
               v-for="item in businessLines"
               :key="item.id"
@@ -17,6 +14,9 @@
               :value="item.id"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="名称">
+        <el-input v-model="searchDto.groupName"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查询</el-button>
@@ -29,8 +29,8 @@
                 @selection-change="handleSelectionChange"
                 @sort-change="handleSortChange">
         <el-table-column type="selection" width="55"/>
-        <el-table-column prop="groupName" label="组名" width="120"/>
         <el-table-column prop="businessLineName" label="业务线" width="120"/>
+        <el-table-column prop="groupName" label="组名" width="120"/>
         <el-table-column prop="createTime" label="注册时间" width="200"/>
         <el-table-column prop="updateTime" label="更新时间" width="200"/>
         <el-table-column fixed="right" label="操作">
@@ -53,9 +53,6 @@
     </div>
     <el-dialog title="编辑框" :visible.sync="editDialogVisible" class="pd-edit-dialog" center>
       <el-form :model="editDto" ref="editDto" :rules="editRules" label-width="100px" label-position="right">
-        <el-form-item label="组名" prop="groupName">
-          <el-input v-model="editDto.groupName" autocomplete="off"></el-input>
-        </el-form-item>
         <el-form-item label="业务线" prop="businessLineId">
           <el-select v-model="editDto.businessLineId" clearable filterable>
             <el-option
@@ -65,6 +62,9 @@
                 :value="item.id"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="组名" prop="groupName">
+          <el-input v-model="editDto.groupName" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -82,7 +82,7 @@
     data() {
       return {
         searchUrl: '/panda/core/group/search',
-        remoteUrl: '/panda/core/group/delete',
+        removeUrl: '/panda/core/group/delete',
         saveUrl: '/panda/core/group/save',
         detailUrl: '/panda/core/group/detail',
         searchDto: {},

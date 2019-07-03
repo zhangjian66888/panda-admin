@@ -199,7 +199,7 @@
     data() {
       return {
         searchUrl: '/panda/core/permission/search',
-        remoteUrl: '/panda/core/permission/delete',
+        removeUrl: '/panda/core/permission/delete',
         saveUrl: '/panda/core/permission/save',
         detailUrl: '/panda/core/permission/detail',
         searchDto: {},

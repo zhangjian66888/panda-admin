@@ -113,7 +113,7 @@
     data() {
       return {
         searchUrl: '/panda/core/app/search',
-        remoteUrl: '/panda/core/app/delete',
+        removeUrl: '/panda/core/app/delete',
         saveUrl: '/panda/core/app/save',
         secretUrl: '/panda/core/app/secrets',
         detailUrl: '/panda/core/app/detail',

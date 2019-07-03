@@ -89,7 +89,7 @@
     data() {
       return {
         searchUrl: '/panda/core/user/search',
-        remoteUrl: '/panda/core/user/delete',
+        removeUrl: '/panda/core/user/delete',
         saveUrl: '/panda/core/user/save',
         detailUrl: '/panda/core/user/detail',
         searchDto: {},

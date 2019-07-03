@@ -73,7 +73,7 @@
     data() {
       return {
         searchUrl: '/panda/core/env/search',
-        remoteUrl: '/panda/core/env/delete',
+        removeUrl: '/panda/core/env/delete',
         saveUrl: '/panda/core/env/save',
         tokenUrl: '/panda/core/env/token',
         detailUrl: '/panda/core/env/detail',

@@ -70,7 +70,7 @@
     data() {
       return {
         searchUrl: '/panda/core/businessline/search',
-        remoteUrl: '/panda/core/businessline/delete',
+        removeUrl: '/panda/core/businessline/delete',
         saveUrl: '/panda/core/businessline/save',
         tokenUrl: '/panda/core/businessline/token',
         detailUrl: '/panda/core/businessline/detail',

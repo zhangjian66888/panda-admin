@@ -68,7 +68,8 @@ function removeById(vueObj, id) {
         });
       }
     });
-  }).catch(() => {
+  }).catch((e) => {
+    console.log("remove catch",e);
     vueObj.$message({
       type: 'info', message: '已取消删除'
     });

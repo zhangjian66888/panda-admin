@@ -127,7 +127,7 @@
     data() {
       return {
         searchUrl: '/panda/core/role/search',
-        remoteUrl: '/panda/core/role/delete',
+        removeUrl: '/panda/core/role/delete',
         saveUrl: '/panda/core/role/save',
         detailUrl: '/panda/core/role/detail',
         searchDto: {},
