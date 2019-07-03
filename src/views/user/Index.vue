@@ -5,6 +5,16 @@
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
     </el-breadcrumb>
     <el-form :inline="true" :model="searchDto" class="pd-search-form">
+      <el-form-item label="业务线">
+        <el-select v-model="searchDto.businessLineId" clearable filterable>
+          <el-option
+              v-for="item in businessLines"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="用户名">
         <el-input v-model="searchDto.username"></el-input>
       </el-form-item>
@@ -28,13 +38,14 @@
         <el-table-column prop="username" label="用户名" width="120" sortable="custom"/>
         <el-table-column prop="zhName" label="中文名" width="120"/>
         <el-table-column prop="mobile" label="手机" width="120" sortable="custom"/>
-        <el-table-column prop="email" label="邮箱" width="120"/>
+        <el-table-column prop="email" label="邮箱" width="200"/>
         <el-table-column prop="createTime" label="注册时间" width="200"/>
         <el-table-column prop="updateTime" label="更新时间" width="200"/>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
+            <el-button @click="bind(scope.row)" type="text" size="small">绑定</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -51,6 +62,16 @@
     </div>
     <el-dialog title="编辑框" :visible.sync="editDialogVisible" class="pd-edit-dialog" center>
       <el-form :model="editDto" ref="editDto" :rules="editRules" label-width="100px" label-position="right">
+        <el-form-item label="业务线" prop="businessLineId">
+          <el-select v-model="editDto.businessLineId" clearable filterable>
+            <el-option
+                v-for="item in businessLines"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editDto.username" autocomplete="off"></el-input>
         </el-form-item>
@@ -63,7 +84,10 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="editDto.email" type="email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="类型" prop="businessLineId">
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="editDto.password" type="password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="类型" prop="userType">
           <el-select v-model="editDto.userType" clearable filterable>
             <el-option
                 v-for="item in userTypes"
@@ -79,11 +103,21 @@
         <el-button type="primary" @click="save" v-bind:disabled="saveBtnDisable">确 定</el-button>
       </div>
     </el-dialog>
+
+
+    <el-dialog title="绑定权限" :visible.sync="bindDialogVisible" class="pd-large-dialog" center>
+      <Bind
+          :apps="apps"
+          :user-id="currentUserId"
+          :business-line-id="currentBusinessLineId"
+          :selected-tags="selectedTags"/>
+    </el-dialog>
   </div>
 </template>
 <script>
   import _util from '../../assets/js/util';
   import _selectItem from '../../components/selectItem.vue';
+  import Bind from '../../views/user/Bind.vue'
 
   export default {
     data() {
@@ -92,6 +126,7 @@
         removeUrl: '/panda/core/user/delete',
         saveUrl: '/panda/core/user/save',
         detailUrl: '/panda/core/user/detail',
+        roleUrl: '/panda/core/user/roles',
         searchDto: {},
         editDto: {},
         records: [],
@@ -99,19 +134,31 @@
         saveBtnDisable: false,
         multipleSelection: [],
         editRules: {
+          businessLineId: [{required: true, trigger: 'blur'}],
           username: [{required: true, trigger: 'blur'}],
           zhName: [{required: true, trigger: 'blur'}],
           mobile: [{required: true, trigger: 'blur'}],
           email: [{required: true, trigger: 'blur'}],
           userType: [{required: true, trigger: 'blur'}],
+          password: [{required: true, trigger: 'blur'}],
         },
         pagination: {current: 1, pageSize: 20, total: 0},
         sortInfo: {sortField: null, sortOrder: null},
         userTypes: [],
+        businessLines: [],
+        bindDialogVisible: false,
+        selectedTags: [],
+        currentUserId: null,
+        currentBusinessLineId: null,
+        apps: [],
       }
+    },
+    components: {
+      Bind
     },
     created: function () {
       _selectItem.staticSelectItem(this, "userType");
+      _selectItem.businessLineSelectItem(this);
     },
     methods: {
       search() {
@@ -156,6 +203,15 @@
       remove(id) {
         _util.removeById(this, id);
       },
+      bind(val) {
+        this.currentUserId = val.id;
+        this.currentBusinessLineId = val.businessLineId;
+        this.bindDialogVisible = true;
+        _util.requestGet(this, this.roleUrl, {id: val.id}, (data) => {
+          this.selectedTags = data;
+        });
+        _selectItem.appSelectItem(this, {businessLineId: val.businessLineId});
+      }
     }
   }
 </script>

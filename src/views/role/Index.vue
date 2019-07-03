@@ -130,6 +130,7 @@
         removeUrl: '/panda/core/role/delete',
         saveUrl: '/panda/core/role/save',
         detailUrl: '/panda/core/role/detail',
+        permissionUrl: '/panda/core/role/permissions',
         searchDto: {},
         editDto: {},
         records: [],
@@ -212,7 +213,7 @@
         this.currentBusinessLineId = val.businessLineId;
         this.currentAppCode = val.appCode;
         this.grantDialogVisible = true;
-        _util.requestGet(this, "/panda/core/role/permissions", {id: val.id}, (data) => {
+        _util.requestGet(this, this.permissionUrl, {id: val.id}, (data) => {
           this.selectedTags = data;
         });
       }

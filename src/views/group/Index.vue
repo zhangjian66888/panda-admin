@@ -37,6 +37,7 @@
           <template slot-scope="scope">
             <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
+            <el-button @click="bind(scope.row)" type="text" size="small">绑定</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -72,11 +73,18 @@
         <el-button type="primary" @click="save" v-bind:disabled="saveBtnDisable">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="绑定权限" :visible.sync="bindDialogVisible" class="pd-large-dialog" center>
+      <Bind :apps="apps"
+            :group-id="currentGroupId"
+            :business-line-id="currentBusinessLineId"
+            :selected-tags="selectedTags"/>
+    </el-dialog>
   </div>
 </template>
 <script>
   import _util from '../../assets/js/util';
   import _selectItem from '../../components/selectItem.vue';
+  import Bind from '../../views/group/Bind.vue';
 
   export default {
     data() {
@@ -85,13 +93,13 @@
         removeUrl: '/panda/core/group/delete',
         saveUrl: '/panda/core/group/save',
         detailUrl: '/panda/core/group/detail',
+        roleUrl: '/panda/core/group/roles',
         searchDto: {},
         editDto: {},
         records: [],
         editDialogVisible: false,
         saveBtnDisable: false,
         multipleSelection: [],
-        businessLines: [/*{id: 1, name: "小班课"}, {id: 2, name: "luna数学"}*/],
         editRules: {
           appAlias: [{required: true, trigger: 'blur'}],
           appName: [{required: true, trigger: 'blur'}],
@@ -100,7 +108,16 @@
         },
         pagination: {current: 1, pageSize: 20, total: 0},
         sortInfo: {sortField: null, sortOrder: null},
+        businessLines: [],
+        bindDialogVisible: false,
+        selectedTags: [],
+        currentGroupId: null,
+        currentBusinessLineId: null,
+        apps: [],
       }
+    },
+    components: {
+      Bind
     },
     created: function () {
       _selectItem.businessLineSelectItem(this);
@@ -127,7 +144,6 @@
         _util.searching(this);
       },
       handleSelectionChange(val) {
-        console.log("multipleSelection", val);
         this.multipleSelection = val;
       },
       showAddDialog() {
@@ -147,6 +163,15 @@
       },
       remove(id) {
         _util.removeById(this, id);
+      },
+      bind(val) {
+        this.currentGroupId = val.id;
+        this.currentBusinessLineId = val.businessLineId;
+        this.bindDialogVisible = true;
+        _util.requestGet(this, this.roleUrl, {id: val.id}, (data) => {
+          this.selectedTags = data;
+        });
+        _selectItem.appSelectItem(this, {businessLineId: val.businessLineId});
       }
     }
   }
