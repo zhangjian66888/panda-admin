@@ -37,12 +37,12 @@
             <el-popover trigger="click" placement="right" @show="showPopover(scope.row)">
               <p>应用编号 : {{ scope.row.appCode }}</p>
               <p>应用名 : {{ scope.row.appName }}</p>
-              <el-table :data="scope.row.tokens">
+              <el-table :data="scope.row.secrets">
                 <el-table-column width="50" property="envProfile" label="环境"></el-table-column>
                 <el-table-column width="300" property="secret" label="秘钥"></el-table-column>
                 <el-table-column label="操作">
                   <template slot-scope="scope">
-                    <el-button type="text" size="small">刷新</el-button>
+                    <el-button type="text" size="small" @click="flushSecret(scope.row)">刷新</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -62,7 +62,6 @@
           <template slot-scope="scope">
             <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
-            <el-button @click="showTokenDialog(scope.row.id)" type="text" size="small">token</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -116,8 +115,9 @@
         searchUrl: '/panda/core/app/search',
         remoteUrl: '/panda/core/app/delete',
         saveUrl: '/panda/core/app/save',
-        tokenUrl: '/panda/core/app/token',
+        secretUrl: '/panda/core/app/secrets',
         detailUrl: '/panda/core/app/detail',
+        flushSecretUrl: '/panda/core/app/flushSecret',
         searchDto: {},
         editDto: {},
         records: [],
@@ -164,11 +164,11 @@
         this.multipleSelection = val;
       },
       showPopover(row) {
-        if (!row.tokens) {
-          _util.requestGet(this, this.tokenUrl,
+        if (!row.secrets) {
+          _util.requestGet(this, this.secretUrl,
             {"appCode": row.appCode},
             (data) => {
-              this.$set(row, 'tokens', data);
+              this.$set(row, 'secrets', data);
             });
         }
       },
@@ -190,8 +190,10 @@
       remove(id) {
         _util.removeById(this, id);
       },
-      showTokenDialog(id) {
-
+      flushSecret(val) {
+        _util.requestPost(this, this.flushSecretUrl, {appCode: val.appCode, envProfile: val.envProfile, envCode: val.envCode}, (data) => {
+          this.$set(val, 'secret', data);
+        });
       }
     }
   }
