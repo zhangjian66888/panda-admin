@@ -120,14 +120,13 @@
           }
         });
         if (!granted) {
-          _util.requestPost(this, this.savePermissionUrl, {roleId: this.roleId, permissionId: val.id}, (data) => {
-            console.log("data", data);
-            this.selectedTags.push({id: val.id, name: val.showName, title: val.name});
+          _util.requestPost(this, this.savePermissionUrl, {roleId: this.roleId, permissionId: val.value}, (data) => {
+            this.selectedTags.push({value: val.id, label: val.showName, title: val.name});
           });
         }
       },
       removePermission(val) {
-        _util.requestPost(this, this.deletePermissionUrl, {roleId: this.roleId, permissionId: val.id}, () => {
+        _util.requestPost(this, this.deletePermissionUrl, {roleId: this.roleId, permissionId: val.value}, () => {
           this.selectedTags.splice(this.selectedTags.indexOf(val), 1);
         });
         console.log("removePermission", val);

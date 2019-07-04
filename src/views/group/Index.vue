@@ -38,6 +38,7 @@
             <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
             <el-button @click="bind(scope.row)" type="text" size="small">绑定</el-button>
+            <el-button @click="operUser(scope.row)" type="text" size="small">成员</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -79,12 +80,16 @@
             :business-line-id="currentBusinessLineId"
             :selected-tags="selectedTags"/>
     </el-dialog>
+    <el-dialog title="操作用户" :visible.sync="userDialogVisible" class="pd-middle-dialog" center>
+      <User :group-id="currentGroupId" :selected-tags="selectedUsers"/>
+    </el-dialog>
   </div>
 </template>
 <script>
   import _util from '../../assets/js/util';
   import _selectItem from '../../components/selectItem.vue';
   import Bind from '../../views/group/Bind.vue';
+  import User from '../../views/group/User.vue';
 
   export default {
     data() {
@@ -94,6 +99,7 @@
         saveUrl: '/panda/core/group/save',
         detailUrl: '/panda/core/group/detail',
         roleUrl: '/panda/core/group/roles',
+        userUrl: '/panda/core/group/users',
         searchDto: {},
         editDto: {},
         records: [],
@@ -114,10 +120,13 @@
         currentGroupId: null,
         currentBusinessLineId: null,
         apps: [],
+        userDialogVisible: false,
+        selectedUsers: [],
       }
     },
     components: {
-      Bind
+      Bind,
+      User
     },
     created: function () {
       _selectItem.businessLineSelectItem(this);
@@ -169,10 +178,17 @@
         this.currentBusinessLineId = val.businessLineId;
         this.bindDialogVisible = true;
         _util.requestGet(this, this.roleUrl, {id: val.id}, (data) => {
-          this.selectedTags = data;
+          this.selectedTags = data ? data : [];
         });
         _selectItem.appSelectItem(this, {businessLineId: val.businessLineId});
-      }
+      },
+      operUser(val) {
+        this.currentGroupId = val.id;
+        this.userDialogVisible = true;
+        _util.requestGet(this, this.userUrl, {id: val.id}, (data) => {
+          this.selectedUsers = data ? data : [];
+        });
+      },
     }
   }
 </script>

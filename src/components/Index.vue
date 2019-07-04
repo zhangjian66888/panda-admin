@@ -65,7 +65,7 @@
           if (menu.subMenus) {
             menu.subMenus.forEach((subMenu, subIndex) => {
               subMenu.index = index + '_' + subIndex
-            })
+            });
           }
         })
         return this.menusList;

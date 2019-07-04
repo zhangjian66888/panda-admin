@@ -32,6 +32,10 @@
     .pd-large-dialog .el-dialog {
         width: 60%;
     }
+
+    .pd-middle-dialog .el-dialog {
+        width: 40%;
+    }
 }
 
 @media screen and (min-width: 1024px) and (max-width: 1680px) {
@@ -41,6 +45,10 @@
     .pd-edpd-large-dialogit-dialog .el-dialog {
         width: 70%;
     }
+
+    .pd-middle-dialog .el-dialog {
+        width: 50%;
+    }
 }
 
 @media screen and (max-width: 1024px) {
@@ -49,6 +57,9 @@
     }
     .pd-large-dialog .el-dialog {
         width: 80%;
+    }
+    .pd-middle-dialog .el-dialog {
+        width: 60%;
     }
 }
 

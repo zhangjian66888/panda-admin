@@ -8,11 +8,11 @@
         <div class="pd-panel-block-content">
           <el-tag
               v-for="tag in tags"
-              :key="tag.id"
+              :key="tag.value"
               class="pd-panel-block-tag"
               closable
               @close="handleClose(tag)">
-            {{tag.name}}
+            {{tag.label}}
           </el-tag>
         </div>
       </el-col>

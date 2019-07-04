@@ -33,12 +33,21 @@
       });
   }
 
+  function groupSelectItem(obj, params = {}, all = false) {
+    _util.requestGet(obj,
+      "/panda/core/selectItem/group", {"all": all},
+      (data) => {
+        obj.groups = data;
+      });
+  }
+
 
   export default {
     staticSelectItem,
     businessLineSelectItem,
     appSelectItem,
     envSelectItem,
+    groupSelectItem,
   }
 
 </script>

@@ -214,7 +214,7 @@
         this.currentAppCode = val.appCode;
         this.grantDialogVisible = true;
         _util.requestGet(this, this.permissionUrl, {id: val.id}, (data) => {
-          this.selectedTags = data;
+          this.selectedTags = data ? data : [];
         });
       }
     }

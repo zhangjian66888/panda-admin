@@ -94,19 +94,19 @@
       bindRole(val) {
         let binded = false;
         this.selectedTags.forEach((tag, index) => {
-          if (tag.id == val.id) {
+          if (tag.value == val.id) {
             this.$message({type: 'error', message: "请勿重复添加"});
             binded = true;
           }
         });
         if (!binded) {
-          _util.requestPost(this, this.saveRoleUrl, {userId: this.userId, roleId: val.id}, (data) => {
-            this.selectedTags.push({id: val.id, name: val.roleName});
+          _util.requestPost(this, this.saveRoleUrl, {userId: this.userId, roleId: val.value}, (data) => {
+            this.selectedTags.push({value: val.id, label: val.roleName});
           });
         }
       },
       removeRole(val) {
-        _util.requestPost(this, this.deleteRoleUrl, {userId: this.userId, roleId: val.id}, () => {
+        _util.requestPost(this, this.deleteRoleUrl, {userId: this.userId, roleId: val.value}, () => {
           this.selectedTags.splice(this.selectedTags.indexOf(val), 1);
         });
       }

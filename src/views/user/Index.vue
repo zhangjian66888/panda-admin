@@ -36,6 +36,7 @@
                 @sort-change="handleSortChange">
         <el-table-column type="selection" width="55"/>
         <el-table-column prop="businessLineName" label="业务线" width="120"/>
+        <el-table-column prop="groupName" label="组" width="120"/>
         <el-table-column prop="username" label="用户名" width="120" sortable="custom"/>
         <el-table-column prop="zhName" label="中文名" width="120"/>
         <el-table-column prop="mobile" label="手机" width="120" sortable="custom"/>
@@ -65,9 +66,19 @@
     <el-dialog title="编辑框" :visible.sync="editDialogVisible" class="pd-edit-dialog" center>
       <el-form :model="editDto" ref="editDto" :rules="editRules" label-width="100px" label-position="right">
         <el-form-item label="业务线" prop="businessLineId">
-          <el-select v-model="editDto.businessLineId" clearable filterable>
+          <el-select v-model="editDto.businessLineId" @change="businessLineChange" clearable filterable>
             <el-option
                 v-for="item in businessLines"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="组" prop="groupId">
+          <el-select v-model="editDto.groupId" clearable filterable>
+            <el-option
+                v-for="item in groups"
                 :key="item.id"
                 :label="item.value"
                 :value="item.id"
@@ -86,7 +97,7 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="editDto.email" type="email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item label="密码" prop="password" v-if="!editDto.id">
           <el-input v-model="editDto.password" type="password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="类型" prop="userType">
@@ -148,6 +159,7 @@
         sortInfo: {sortField: null, sortOrder: null},
         userTypes: [],
         businessLines: [],
+        groups: [],
         bindDialogVisible: false,
         selectedTags: [],
         currentUserId: null,
@@ -205,12 +217,16 @@
       remove(id) {
         _util.removeById(this, id);
       },
+      businessLineChange(val) {
+        console.log("----------------------",val);
+        _selectItem.groupSelectItem(this, {businessLineId: val});
+      },
       bind(val) {
         this.currentUserId = val.id;
         this.currentBusinessLineId = val.businessLineId;
         this.bindDialogVisible = true;
         _util.requestGet(this, this.roleUrl, {id: val.id}, (data) => {
-          this.selectedTags = data;
+          this.selectedTags = data ? data : [];
         });
         _selectItem.appSelectItem(this, {businessLineId: val.businessLineId});
       }
