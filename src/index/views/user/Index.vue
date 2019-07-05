@@ -128,9 +128,9 @@
   </div>
 </template>
 <script>
-  import _util from '../../assets/js/util';
-  import _selectItem from '../../components/selectItem.vue';
-  import Bind from '../../views/user/Bind.vue'
+  import _util from '@/assets/js/util';
+  import _selectItem from '@/components/SelectItem.vue';
+  import Bind from './Bind.vue'
 
   export default {
     data() {

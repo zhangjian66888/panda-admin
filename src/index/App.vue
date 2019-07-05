@@ -5,7 +5,8 @@
 </template>
 
 <script>
-  import Index from "@/components/Index.vue";
+  import Index from '@/components/Index.vue';
+  import RouterTable from '@/components/RouterTable.vue';
 
   export default {
     data() {
@@ -22,6 +23,10 @@
         ],
         /*{ "icon": "el-icon-grape", "title": "环境管理", "subMenus": [{ "title": "环境首页", "url": "/env/index"}]}]*/
       }
+    },
+    mounted: function () {
+      RouterTable.dynamicRouter(this.menusList.map(item => item.url));
+      // RouterTable.dynamicRouter(["/"]);
     },
     components: {
       Index

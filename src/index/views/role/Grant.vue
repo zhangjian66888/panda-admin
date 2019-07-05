@@ -1,20 +1,26 @@
 <template>
   <div>
-    <pd-panel-tag title="selected" :tags="selectedTags" v-on:tagRemove="removeRole"></pd-panel-tag>
+    <pd-panel-tag title="selected" :tags="selectedTags" v-on:tagRemove="removePermission"></pd-panel-tag>
     <el-divider></el-divider>
     <el-form :inline="true" :model="searchDto" class="pd-search-form">
-      <el-form-item label="应用">
-        <el-select v-model="searchDto.appCode" clearable filterable>
+      <el-form-item label="类型">
+        <el-select v-model="searchDto.type" clearable filterable>
           <el-option
-              v-for="item in apps"
+              v-for="item in permissionTypes"
               :key="item.id"
               :label="item.value"
               :value="item.id"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="角色名">
-        <el-input v-model="searchDto.roleName"></el-input>
+      <el-form-item label="名称">
+        <el-input v-model="searchDto.name"></el-input>
+      </el-form-item>
+      <el-form-item label="显示名称">
+        <el-input v-model="searchDto.showName"></el-input>
+      </el-form-item>
+      <el-form-item label="地址">
+        <el-input v-model="searchDto.url"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查询</el-button>
@@ -24,14 +30,13 @@
       <el-table :data="records" border style="width: 100%" class="pd-list-table"
                 header-row-class-name="pd-list-table-header"
                 @sort-change="handleSortChange">
-        <el-table-column prop="businessLineName" label="业务线" width="120"/>
-        <el-table-column prop="envName" label="环境" width="100"/>
-        <el-table-column prop="appName" label="应用" width="100"/>
-        <el-table-column prop="roleName" label="角色" width="120" sortable="custom"/>
-        <el-table-column prop="description" label="描述" width="200"/>
+        <el-table-column prop="name" label="权限名称" width="120" sortable="custom"/>
+        <el-table-column prop="showName" label="显示名称" width="120"/>
+        <!--<el-table-column prop="url" label="地址" width="200"/>-->
+        <el-table-column prop="typeShow" label="类型" width="100"/>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
-            <el-button @click="bindRole(scope.row)" type="text" size="small">选择</el-button>
+            <el-button @click="grantPremission(scope.row)" type="text" size="small">选择</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -49,25 +54,36 @@
   </div>
 </template>
 <script>
-  import _util from '../../assets/js/util';
+  import _util from '@/assets/js/util';
+  import _selectItem from '@/components/SelectItem.vue';
 
   export default {
     props: {
       selectedTags: Array,
-      userId: Number,
+      roleId: Number,
       businessLineId: Number,
-      apps: Array,
+      appCode: Number,
     },
     data() {
       return {
-        searchUrl: '/panda/core/role/search',
-        saveRoleUrl: '/panda/core/user/saveRole',
-        deleteRoleUrl: '/panda/core/user/deleteRole',
+        searchUrl: '/panda/core/permission/search',
+        savePermissionUrl: '/panda/core/role/savePermission',
+        deletePermissionUrl: '/panda/core/role/deletePermission',
         searchDto: {},
         records: [],
         pagination: {current: 1, pageSize: 20, total: 0},
         sortInfo: {sortField: null, sortOrder: null},
+        permissionMethods: [],
+        permissionTypes: [],
+        actions: [],
+        menuTypes: []
       }
+    },
+    created: function () {
+      _selectItem.staticSelectItem(this, "permissionType");
+      _selectItem.staticSelectItem(this, "action");
+      _selectItem.staticSelectItem(this, "menuType");
+      _selectItem.businessLineSelectItem(this);
     },
     methods: {
       search() {
@@ -89,27 +105,34 @@
       },
       searching() {
         this.searchDto.businessLineId = this.businessLineId;
+        this.searchDto.appCode = this.appCode;
         _util.searching(this);
       },
-      bindRole(val) {
-        let binded = false;
+      businessLineChange(val) {
+        _selectItem.appSelectItem(this, {businessLineId: val});
+      },
+      grantPremission(val) {
+        let granted = false;
         this.selectedTags.forEach((tag, index) => {
-          if (tag.value == val.id) {
+          if (tag.id == val.id) {
             this.$message({type: 'error', message: "请勿重复添加"});
-            binded = true;
+            granted = true;
           }
         });
-        if (!binded) {
-          _util.requestPost(this, this.saveRoleUrl, {userId: this.userId, roleId: val.value}, (data) => {
-            this.selectedTags.push({value: val.id, label: val.roleName});
+        if (!granted) {
+          _util.requestPost(this, this.savePermissionUrl, {roleId: this.roleId, permissionId: val.value}, (data) => {
+            this.selectedTags.push({value: val.id, label: val.showName, title: val.name});
           });
         }
       },
-      removeRole(val) {
-        _util.requestPost(this, this.deleteRoleUrl, {userId: this.userId, roleId: val.value}, () => {
+      removePermission(val) {
+        _util.requestPost(this, this.deletePermissionUrl, {roleId: this.roleId, permissionId: val.value}, () => {
           this.selectedTags.splice(this.selectedTags.indexOf(val), 1);
         });
+        console.log("removePermission", val);
       }
     }
   }
 </script>
+
+

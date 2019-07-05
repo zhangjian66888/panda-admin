@@ -192,8 +192,8 @@
   </div>
 </template>
 <script>
-  import _util from '../../assets/js/util';
-  import _selectItem from '../../components/selectItem.vue';
+  import _util from '@/assets/js/util';
+  import _selectItem from '@/components/SelectItem.vue';
 
   export default {
     data() {

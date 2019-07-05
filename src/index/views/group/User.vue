@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import _util from '../../assets/js/util';
+  import _util from '@/assets/js/util';
 
   export default {
     props: {

@@ -2,11 +2,11 @@
   <div>
     <el-breadcrumb separator="/" class="pd-breadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户组</el-breadcrumb-item>
+      <el-breadcrumb-item>角色管理</el-breadcrumb-item>
     </el-breadcrumb>
     <el-form :inline="true" :model="searchDto" class="pd-search-form">
       <el-form-item label="业务线">
-        <el-select v-model="searchDto.businessLineId" clearable filterable>
+        <el-select v-model="searchDto.businessLineId" @change="businessLineChange" clearable filterable>
           <el-option
               v-for="item in businessLines"
               :key="item.id"
@@ -15,8 +15,18 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="名称">
-        <el-input v-model="searchDto.groupName"></el-input>
+      <el-form-item label="应用">
+        <el-select v-model="searchDto.appCode" clearable filterable>
+          <el-option
+              v-for="item in apps"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="角色名">
+        <el-input v-model="searchDto.roleName"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查询</el-button>
@@ -29,16 +39,18 @@
                 @selection-change="handleSelectionChange"
                 @sort-change="handleSortChange">
         <el-table-column type="selection" width="55"/>
+        <el-table-column prop="roleName" label="角色" width="120" sortable="custom"/>
+        <el-table-column prop="envName" label="环境" width="100"/>
         <el-table-column prop="businessLineName" label="业务线" width="120"/>
-        <el-table-column prop="groupName" label="组名" width="120"/>
+        <el-table-column prop="appName" label="应用" width="100"/>
+        <el-table-column prop="description" label="描述" width="200"/>
         <el-table-column prop="createTime" label="注册时间" width="200"/>
         <el-table-column prop="updateTime" label="更新时间" width="200"/>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
-            <el-button @click="bind(scope.row)" type="text" size="small">绑定</el-button>
-            <el-button @click="operUser(scope.row)" type="text" size="small">成员</el-button>
+            <el-button @click="grant(scope.row)" type="text" size="small">授权</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -55,8 +67,18 @@
     </div>
     <el-dialog title="编辑框" :visible.sync="editDialogVisible" class="pd-edit-dialog" center>
       <el-form :model="editDto" ref="editDto" :rules="editRules" label-width="100px" label-position="right">
+        <el-form-item label="环境" prop="envCode">
+          <el-select v-model="editDto.envCode" filterable>
+            <el-option
+                v-for="item in envs"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="业务线" prop="businessLineId">
-          <el-select v-model="editDto.businessLineId" clearable filterable>
+          <el-select v-model="editDto.businessLineId" @change="businessLineChange" filterable>
             <el-option
                 v-for="item in businessLines"
                 :key="item.id"
@@ -65,8 +87,21 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="组名" prop="groupName">
-          <el-input v-model="editDto.groupName" autocomplete="off"></el-input>
+        <el-form-item label="应用" prop="appCode">
+          <el-select v-model="editDto.appCode" filterable>
+            <el-option
+                v-for="item in apps"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="角色名" prop="roleName">
+          <el-input v-model="editDto.roleName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" prop="description">
+          <el-input v-model="editDto.description" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -74,32 +109,28 @@
         <el-button type="primary" @click="save" v-bind:disabled="saveBtnDisable">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="绑定权限" :visible.sync="bindDialogVisible" class="pd-large-dialog" center>
-      <Bind :apps="apps"
-            :group-id="currentGroupId"
-            :business-line-id="currentBusinessLineId"
-            :selected-tags="selectedTags"/>
-    </el-dialog>
-    <el-dialog title="操作用户" :visible.sync="userDialogVisible" class="pd-middle-dialog" center>
-      <User :group-id="currentGroupId" :selected-tags="selectedUsers"/>
+
+    <el-dialog title="授权框" :visible.sync="grantDialogVisible" class="pd-large-dialog" center>
+      <Grant :role-id="currentRoleId"
+             :business-line-id="currentBusinessLineId"
+             :app-code="currentAppCode"
+             :selected-tags="selectedTags"/>
     </el-dialog>
   </div>
 </template>
 <script>
-  import _util from '../../assets/js/util';
-  import _selectItem from '../../components/selectItem.vue';
-  import Bind from '../../views/group/Bind.vue';
-  import User from '../../views/group/User.vue';
+  import _util from '@/assets/js/util';
+  import _selectItem from '@/components/SelectItem.vue';
+  import Grant from './Grant.vue';
 
   export default {
     data() {
       return {
-        searchUrl: '/panda/core/group/search',
-        removeUrl: '/panda/core/group/delete',
-        saveUrl: '/panda/core/group/save',
-        detailUrl: '/panda/core/group/detail',
-        roleUrl: '/panda/core/group/roles',
-        userUrl: '/panda/core/group/users',
+        searchUrl: '/panda/core/role/search',
+        removeUrl: '/panda/core/role/delete',
+        saveUrl: '/panda/core/role/save',
+        detailUrl: '/panda/core/role/detail',
+        permissionUrl: '/panda/core/role/permissions',
         searchDto: {},
         editDto: {},
         records: [],
@@ -107,29 +138,29 @@
         saveBtnDisable: false,
         multipleSelection: [],
         editRules: {
-          appAlias: [{required: true, trigger: 'blur'}],
-          appName: [{required: true, trigger: 'blur'}],
-          appLevel: [{required: true, trigger: 'blur'}],
+          roleName: [{required: true, trigger: 'blur'}],
           businessLineId: [{required: true, trigger: 'blur'}],
+          appCode: [{required: true, trigger: 'blur'}],
+          envCode: [{required: true, trigger: 'blur'}],
         },
         pagination: {current: 1, pageSize: 20, total: 0},
         sortInfo: {sortField: null, sortOrder: null},
         businessLines: [],
-        bindDialogVisible: false,
-        selectedTags: [],
-        currentGroupId: null,
-        currentBusinessLineId: null,
         apps: [],
-        userDialogVisible: false,
-        selectedUsers: [],
+        envs: [],
+        grantDialogVisible: false,
+        selectedTags: [],
+        currentRoleId: null,
+        currentBusinessLineId: null,
+        currentAppCode: null,
       }
     },
     components: {
-      Bind,
-      User
+      Grant
     },
     created: function () {
       _selectItem.businessLineSelectItem(this);
+      _selectItem.envSelectItem(this);
     },
     methods: {
       search() {
@@ -153,6 +184,7 @@
         _util.searching(this);
       },
       handleSelectionChange(val) {
+        console.log("multipleSelection", val);
         this.multipleSelection = val;
       },
       showAddDialog() {
@@ -173,22 +205,18 @@
       remove(id) {
         _util.removeById(this, id);
       },
-      bind(val) {
-        this.currentGroupId = val.id;
+      businessLineChange(val) {
+        _selectItem.appSelectItem(this, {businessLineId: val});
+      },
+      grant(val) {
+        this.currentRoleId = val.id;
         this.currentBusinessLineId = val.businessLineId;
-        this.bindDialogVisible = true;
-        _util.requestGet(this, this.roleUrl, {id: val.id}, (data) => {
+        this.currentAppCode = val.appCode;
+        this.grantDialogVisible = true;
+        _util.requestGet(this, this.permissionUrl, {id: val.id}, (data) => {
           this.selectedTags = data ? data : [];
         });
-        _selectItem.appSelectItem(this, {businessLineId: val.businessLineId});
-      },
-      operUser(val) {
-        this.currentGroupId = val.id;
-        this.userDialogVisible = true;
-        _util.requestGet(this, this.userUrl, {id: val.id}, (data) => {
-          this.selectedUsers = data ? data : [];
-        });
-      },
+      }
     }
   }
 </script>

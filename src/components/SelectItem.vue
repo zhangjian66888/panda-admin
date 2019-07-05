@@ -1,5 +1,5 @@
 <script>
-  import _util from '../assets/js/util';
+  import _util from '@/assets/js/util';
 
   function staticSelectItem(obj, type, all = false) {
     _util.requestGet(obj,

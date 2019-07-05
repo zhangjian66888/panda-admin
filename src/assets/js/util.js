@@ -1,5 +1,5 @@
 import Reqwest from 'reqwest';
-import _global from '../../_global';
+import _global from '@/_global';
 
 function searching(vueObj) {
   const params = {
@@ -69,7 +69,7 @@ function removeById(vueObj, id) {
       }
     });
   }).catch((e) => {
-    console.log("remove catch",e);
+    console.log("remove catch", e);
     vueObj.$message({
       type: 'info', message: '已取消删除'
     });
