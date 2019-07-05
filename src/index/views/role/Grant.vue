@@ -120,7 +120,7 @@
           }
         });
         if (!granted) {
-          _util.requestPost(this, this.savePermissionUrl, {roleId: this.roleId, permissionId: val.value}, (data) => {
+          _util.requestPost(this, this.savePermissionUrl, {roleId: this.roleId, permissionId: val.id}, (data) => {
             this.selectedTags.push({value: val.id, label: val.showName, title: val.name});
           });
         }

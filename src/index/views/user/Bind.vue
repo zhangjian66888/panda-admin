@@ -100,7 +100,7 @@
           }
         });
         if (!binded) {
-          _util.requestPost(this, this.saveRoleUrl, {userId: this.userId, roleId: val.value}, (data) => {
+          _util.requestPost(this, this.saveRoleUrl, {userId: this.userId, roleId: val.id}, (data) => {
             this.selectedTags.push({value: val.id, label: val.roleName});
           });
         }
