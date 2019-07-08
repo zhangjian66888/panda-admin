@@ -1,5 +1,7 @@
 <script>
+
   import Vue from "vue";
+  import store from '@/store'
   import router from '@/index/router'
   import Home from '@/index/views/Home.vue'
   import AppIndex from '@/index/views/app/Index.vue'
@@ -53,6 +55,14 @@
     }
   ];
 
+  function checkAccessToken() {
+    let token = store.state.accessToken;
+    if (token == null || token == '') {
+      return false;
+    }
+    return true;
+  }
+
   function dynamicRouter(permissions) {
     let hadRouters = routers.filter(item => {
       return permissions.indexOf(item.path) > -1;
@@ -61,14 +71,15 @@
     console.log(hadRouters)
     tmp.$router.addRoutes(hadRouters);
     tmp.$router.beforeEach((to, from, next) => {
-      if (permissions.indexOf(to.path) < 0) {
-        location.href='/login.html'
+      if (!checkAccessToken() || permissions.indexOf(to.path) < 0) {
+        location.href = '/login.html'
       }
       next();
     });
   }
 
+
   export default {
-    dynamicRouter
+    dynamicRouter,
   }
 </script>

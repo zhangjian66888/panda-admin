@@ -1,4 +1,4 @@
-import Axios from '@/_axios';
+import Reqwest from 'reqwest';
 import _global from '@/_global';
 
 function searching(vueObj) {
@@ -12,28 +12,27 @@ function searching(vueObj) {
   for (let k in params) {
     if (!params[k]) delete params[k];
   }
-  Axios({
+  Reqwest({
     url: _global.backUrl + vueObj.searchUrl,
     method: "get",
-    params: {
+    data: {
       ...params
     },
     type: "json"
-  }).then(response => {
-    let data = response.data;
+  }).then(data => {
     vueObj.pagination.total = data.total;
     vueObj.records = data.records;
   });
 }
 
 function showDetail(vueObj, id) {
-  Axios({
+  Reqwest({
     url: _global.backUrl + vueObj.detailUrl,
     method: "get",
-    params: {id: id},
+    contentType: "application/json",
+    data: {id: id},
     type: "json"
-  }).then(response => {
-    let data = response.data;
+  }).then(data => {
     if (data.code == 0) {
       vueObj.editDto = data.data;
       vueObj.saveBtnDisable = false;
@@ -52,13 +51,12 @@ function removeById(vueObj, id) {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    Axios({
+    Reqwest({
       url: _global.backUrl + vueObj.removeUrl,
       method: "post",
-      params: {id: id},
+      data: {id: id},
       type: "json"
-    }).then(response => {
-      let data = response.data;
+    }).then(data => {
       if (data.code == 0) {
         vueObj.$message({
           type: 'success', message: data.msg
@@ -82,13 +80,13 @@ function save(vueObj) {
   vueObj.$refs['editDto'].validate((valid) => {
     if (valid) {
       vueObj.saveBtnDisable = true;
-      Axios({
+      Reqwest({
         url: _global.backUrl + vueObj.saveUrl,
         method: "post",
+        contentType: "application/json",
         data: JSON.stringify(vueObj.editDto),
         type: "json"
-      }).then(response => {
-        let data = response.data;
+      }).then(data => {
         vueObj.saveBtnDisable = false;
         if (data.code == 0) {
           vueObj.$message({
@@ -113,14 +111,14 @@ function save(vueObj) {
   });
 }
 
-function requestGet(vueObj, url, params = {}, successFun) {
-  Axios({
+function requestGet(vueObj, url, param = {}, successFun) {
+  Reqwest({
     url: _global.backUrl + url,
     method: "get",
-    params: params,
+    contentType: "application/json",
+    data: param,
     type: "json"
-  }).then(response => {
-    let data = response.data;
+  }).then(data => {
     if (data.code == 0) {
       if (successFun) {
         successFun(data.data);
@@ -133,14 +131,14 @@ function requestGet(vueObj, url, params = {}, successFun) {
   });
 }
 
-function requestPost(vueObj, url, params = {}, successFun) {
-  Axios({
+function requestPost(vueObj, url, param = {}, successFun) {
+  Reqwest({
     url: _global.backUrl + url,
     method: "post",
-    data: JSON.stringify(params),
+    contentType: "application/json",
+    data: JSON.stringify(param),
     type: "json"
-  }).then(response => {
-    let data = response.data;
+  }).then(data => {
     if (data.code == 0) {
       if (successFun) {
         successFun(data.data);

@@ -4,7 +4,7 @@
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>权限管理</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-form :inline="true" :model="searchDto" class="pd-search-form">
+    <el-form :inline="true" :model="searchDto" class="pd-search-form" @keyup.enter.native="search">
       <el-form-item label="业务线">
         <el-select v-model="searchDto.businessLineId" @change="businessLineChange"  clearable filterable>
           <el-option
@@ -283,6 +283,7 @@
       },
       showEditDialog(id) {
         _util.showDetail(this, id);
+        this.businessLineChange(this.editDto.businessLineId);
       },
       closeDaialog() {
         this.editActive = 1;

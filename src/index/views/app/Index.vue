@@ -4,7 +4,8 @@
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>应用管理</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-form :inline="true" :model="searchDto" class="pd-search-form">
+    <el-form :inline="true" :model="searchDto" class="pd-search-form"
+             @keyup.enter.native="search">
       <el-form-item label="名称">
         <el-input v-model="searchDto.appAlias"></el-input>
       </el-form-item>

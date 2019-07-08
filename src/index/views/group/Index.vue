@@ -4,7 +4,7 @@
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户组</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-form :inline="true" :model="searchDto" class="pd-search-form">
+    <el-form :inline="true" :model="searchDto" class="pd-search-form" @keyup.enter.native="search">
       <el-form-item label="业务线">
         <el-select v-model="searchDto.businessLineId" clearable filterable>
           <el-option

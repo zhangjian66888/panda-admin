@@ -4,9 +4,9 @@
       <div class="pd-logo">权限中心</div>
       <div class="pd-user-info">
         <a href="/"><i class="el-icon-message"></i></a>
-        <a href="/"><i class="el-icon-user-solid"></i><span>张利剑</span></a>
+        <a href="/"><i class="el-icon-user-solid"></i><span>{{zhName}}</span></a>
         <a href="/"><i class="el-icon-setting"></i></a>
-        <a href="/"><i class="el-icon-switch-button"></i></a>
+        <a href="javascript:void(0);" @click="logout"><i class="el-icon-switch-button"></i></a>
       </div>
     </el-header>
     <el-container>
@@ -37,7 +37,7 @@
           </slot>
         </el-menu>
       </el-aside>
-      <el-main>
+      <el-main class="pd-content">
         <router-view/>
       </el-main>
     </el-container>
@@ -45,10 +45,17 @@
   </el-container>
 </template>
 <script>
+  import store from '@/store';
+
   export default {
     name: "Index",
     props: {
       menusList: Array
+    },
+    data() {
+      return {
+        zhName: store.state.zhName
+      }
     },
     methods: {
       handleOpen(key, keyPath) {
@@ -56,7 +63,15 @@
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath);
+      },
+      logout() {
+        store.commit('clearLoginInfo');
       }
+    },
+    created: function () {
+      store.dispatch("checkToken").then(data => {
+        if (!data) location.href = 'login.html'
+      });
     },
     computed: {
       menus: function () {
@@ -69,7 +84,8 @@
           }
         })
         return this.menusList;
-      },
+      }
+      ,
     }
   }
 </script>
@@ -77,6 +93,7 @@
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     min-height: 600px;
   }
+
   .pd-main .pd-header {
     padding: 0px 10px;
     background: #fff;
@@ -139,7 +156,18 @@
     content: '';
   }
 
-  .pd-main .el-main{
+  .pd-main .el-main {
     padding: 0px;
+  }
+
+  .pd-main .el-main:after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: url("../assets/images/home-bg.png");
+    opacity: 0.02;
+
   }
 </style>

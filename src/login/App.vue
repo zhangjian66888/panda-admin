@@ -12,3 +12,12 @@
     }
   }
 </script>
+
+<style>
+  body {
+    height: 100%;
+    width: 100%;
+    background: url("../assets/images/login-bg.jpeg") no-repeat;
+    background-size: cover;
+  }
+</style>

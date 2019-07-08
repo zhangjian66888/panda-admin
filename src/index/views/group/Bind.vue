@@ -2,7 +2,7 @@
   <div>
     <pd-panel-tag title="selected" :tags="selectedTags" v-on:tagRemove="removeRole"></pd-panel-tag>
     <el-divider></el-divider>
-    <el-form :inline="true" :model="searchDto" class="pd-search-form">
+    <el-form :inline="true" :model="searchDto" class="pd-search-form" @keyup.enter.native="search">
       <el-form-item label="应用">
         <el-select v-model="searchDto.appCode" clearable filterable>
           <el-option
@@ -93,12 +93,9 @@
       },
       bindRole(val) {
         let binded = false;
-        console.log("--------------",val)
-        console.log("--------------",this.selectedTags)
         this.selectedTags.forEach((tag, index) => {
           if (tag.value == val.id) {
-            console.log("============", tag.value,val.id);
-            // this.$message({type: 'error', message: "请勿重复添加"});
+            this.$message({type: 'error', message: "请勿重复添加"});
             binded = true;
           }
         });

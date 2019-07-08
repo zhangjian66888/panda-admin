@@ -2,7 +2,7 @@
   <div>
     <pd-panel-tag title="selected" :tags="selectedTags" v-on:tagRemove="removePermission"></pd-panel-tag>
     <el-divider></el-divider>
-    <el-form :inline="true" :model="searchDto" class="pd-search-form">
+    <el-form :inline="true" :model="searchDto" class="pd-search-form" @keyup.enter.native="search">
       <el-form-item label="类型">
         <el-select v-model="searchDto.type" clearable filterable>
           <el-option
