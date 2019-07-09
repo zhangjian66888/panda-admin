@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-has="">
   <div>
     <el-breadcrumb separator="/" class="pd-breadcrumb">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
@@ -46,10 +46,10 @@
         <el-table-column prop="updateTime" label="更新时间" width="200"/>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
-            <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
-            <el-button @click="showCopyDialog(scope.row.id)" type="text" size="small">复制</el-button>
-            <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
-            <el-button @click="bind(scope.row)" type="text" size="small">绑定</el-button>
+            <el-button @click="showEditDialog(scope.row.id)" type="text" size="small" v-if="phas('USER_EDIT')">编辑</el-button>
+            <el-button @click="showCopyDialog(scope.row.id)" type="text" size="small" v-if="phas('USER_COPY')">复制</el-button>
+            <el-button @click="remove(scope.row.id)" type="text" size="small" v-if="phas('USER_DELETE')">删除</el-button>
+            <el-button @click="bind(scope.row)" type="text" size="small" v-if="phas('USER_BIND')">绑定</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -206,10 +206,10 @@
         this.editDialogVisible = true;
       },
       showEditDialog(id) {
-        _util.showDetail(this, id, () => _selectItem.groupSelectItem(this, {businessLineId: this.editDto.businessLineId}));
+        _util.showDetail(this, id, () => this.businessLineChange(this.editDto.businessLineId));
       },
       showCopyDialog(id) {
-        _util.showCopy(this, id, () => _selectItem.groupSelectItem(this, {businessLineId: this.editDto.businessLineId}));
+        _util.showCopy(this, id, () => this.businessLineChange(this.editDto.businessLineId));
       },
       closeDaialog() {
         this.$refs['editDto'].resetFields();

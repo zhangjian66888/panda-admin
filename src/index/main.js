@@ -6,9 +6,11 @@ import App from "./App.vue";
 import router from "./router";
 import store from "@/store";
 import PanelTag from '@/components/PanelTag.vue'
+import Permission from  '@/components/Permission.vue'
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+Vue.use(Permission);
 Vue.component('pd-panel-tag', PanelTag);
 
 new Vue({

@@ -6,7 +6,7 @@
     </el-breadcrumb>
     <el-form :inline="true" :model="searchDto" class="pd-search-form" @keyup.enter.native="search">
       <el-form-item label="业务线">
-        <el-select v-model="searchDto.businessLineId" @change="businessLineChange"  clearable filterable>
+        <el-select v-model="searchDto.businessLineId" @change="businessLineChange" clearable filterable>
           <el-option
               v-for="item in businessLines"
               :key="item.id"
@@ -60,6 +60,7 @@
         <el-table-column prop="appName" label="应用" width="100"/>
         <el-table-column prop="name" label="权限名称" width="150" sortable="custom"/>
         <el-table-column prop="showName" label="显示名称" width="100"/>
+        <el-table-column prop="menuTypeShow" label="菜单" width="100"/>
         <!--<el-table-column prop="url" label="地址" width="200"/>-->
         <el-table-column prop="typeShow" label="类型" width="100"/>
         <el-table-column prop="createTime" label="注册时间" width="200"/>
@@ -67,6 +68,7 @@
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
+            <el-button @click="showCopyDialog(scope.row.id)" type="text" size="small">复制</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -112,7 +114,7 @@
         </el-form-item>
         <el-form-item label="权限名称" prop="name">
           <el-input placeholder="请输入内容" v-model="editDto.name">
-            <template slot="prepend">ROLE_</template>
+            <template slot="prepend">P_</template>
           </el-input>
         </el-form-item>
         <el-form-item label="显示名称" prop="showName">
@@ -202,6 +204,7 @@
         removeUrl: '/panda/core/permission/delete',
         saveUrl: '/panda/core/permission/save',
         detailUrl: '/panda/core/permission/detail',
+        copyUrl: '/panda/core/permission/copy',
         searchDto: {},
         editDto: {},
         records: [],
@@ -282,8 +285,15 @@
         this.editDialogVisible = true;
       },
       showEditDialog(id) {
-        _util.showDetail(this, id);
-        this.businessLineChange(this.editDto.businessLineId);
+        _util.showDetail(this, id, () => {
+          this.businessLineChange(this.editDto.businessLineId);
+        });
+      },
+      showCopyDialog(id) {
+        _util.showCopy(this, id, () => {
+          this.editActive = 1;
+          this.businessLineChange(this.editDto.businessLineId);
+        });
       },
       closeDaialog() {
         this.editActive = 1;

@@ -30,10 +30,11 @@
       <el-table :data="records" border style="width: 100%" class="pd-list-table"
                 header-row-class-name="pd-list-table-header"
                 @sort-change="handleSortChange">
-        <el-table-column prop="name" label="权限名称" width="120" sortable="custom"/>
-        <el-table-column prop="showName" label="显示名称" width="120"/>
+        <el-table-column prop="name" label="权限名称" width="200" sortable="custom"/>
+        <el-table-column prop="showName" label="显示名称" width="200"/>
+        <el-table-column prop="menuTypeShow" label="菜单" width="150"/>
         <!--<el-table-column prop="url" label="地址" width="200"/>-->
-        <el-table-column prop="typeShow" label="类型" width="100"/>
+        <el-table-column prop="typeShow" label="类型" width="150"/>
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button @click="grantPremission(scope.row)" type="text" size="small">选择</el-button>
