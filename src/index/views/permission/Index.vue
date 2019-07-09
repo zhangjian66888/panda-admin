@@ -125,9 +125,9 @@
           <el-select v-model="editDto.method">
             <el-option
                 v-for="item in permissionMethods"
-                :key="item.id"
+                :key="item.value"
                 :label="item.value"
-                :value="item.id"
+                :value="item.value"
             />
           </el-select>
         </el-form-item>
@@ -149,9 +149,9 @@
           <el-select v-model="editDto.action" clearable filterable>
             <el-option
                 v-for="item in actions"
-                :key="item.id"
+                :key="item.value"
                 :label="item.value"
-                :value="item.id"
+                :value="item.value"
             />
           </el-select>
         </el-form-item>

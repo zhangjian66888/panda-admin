@@ -47,6 +47,7 @@
         <el-table-column fixed="right" label="操作">
           <template slot-scope="scope">
             <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
+            <el-button @click="showCopyDialog(scope.row.id)" type="text" size="small">复制</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
             <el-button @click="bind(scope.row)" type="text" size="small">绑定</el-button>
           </template>
@@ -139,6 +140,7 @@
         removeUrl: '/panda/core/user/delete',
         saveUrl: '/panda/core/user/save',
         detailUrl: '/panda/core/user/detail',
+        copyUrl: '/panda/core/user/copy',
         roleUrl: '/panda/core/user/roles',
         searchDto: {},
         editDto: {},
@@ -196,7 +198,6 @@
         _util.searching(this);
       },
       handleSelectionChange(val) {
-        console.log("multipleSelection", val);
         this.multipleSelection = val;
       },
       showAddDialog() {
@@ -205,7 +206,10 @@
         this.editDialogVisible = true;
       },
       showEditDialog(id) {
-        _util.showDetail(this, id);
+        _util.showDetail(this, id, () => _selectItem.groupSelectItem(this, {businessLineId: this.editDto.businessLineId}));
+      },
+      showCopyDialog(id) {
+        _util.showCopy(this, id, () => _selectItem.groupSelectItem(this, {businessLineId: this.editDto.businessLineId}));
       },
       closeDaialog() {
         this.$refs['editDto'].resetFields();
@@ -218,7 +222,6 @@
         _util.removeById(this, id);
       },
       businessLineChange(val) {
-        console.log("----------------------",val);
         _selectItem.groupSelectItem(this, {businessLineId: val});
       },
       bind(val) {

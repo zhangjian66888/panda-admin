@@ -23,10 +23,11 @@ function searching(vueObj) {
     let data = response.data;
     vueObj.pagination.total = data.total;
     vueObj.records = data.records;
+  }).catch(e => {
   });
 }
 
-function showDetail(vueObj, id) {
+function showDetail(vueObj, id, successFun) {
   Axios({
     url: _global.backUrl + vueObj.detailUrl,
     method: "get",
@@ -38,11 +39,38 @@ function showDetail(vueObj, id) {
       vueObj.editDto = data.data;
       vueObj.saveBtnDisable = false;
       vueObj.editDialogVisible = true;
+      if (successFun) {
+        successFun();
+      }
     } else {
       vueObj.$message({
         type: 'error', message: data.msg
       });
     }
+  }).catch(e=>{});
+}
+
+function showCopy(vueObj, id, successFun) {
+  Axios({
+    url: _global.backUrl + vueObj.copyUrl,
+    method: "get",
+    params: {id: id},
+    type: "json"
+  }).then(response => {
+    let data = response.data;
+    if (data.code == 0) {
+      vueObj.editDto = data.data;
+      vueObj.saveBtnDisable = false;
+      vueObj.editDialogVisible = true;
+      if (successFun) {
+        successFun();
+      }
+    } else {
+      vueObj.$message({
+        type: 'error', message: data.msg
+      });
+    }
+  }).catch(e => {
   });
 }
 
@@ -71,7 +99,6 @@ function removeById(vueObj, id) {
       }
     });
   }).catch((e) => {
-    console.log("remove catch", e);
     vueObj.$message({
       type: 'info', message: '已取消删除'
     });
@@ -101,10 +128,7 @@ function save(vueObj) {
             type: 'error', message: data.msg
           });
         }
-      }, (err, msg) => {
-        this.$message({
-          type: 'error', message: msg
-        });
+      }).catch(e => {
         vueObj.saveBtnDisable = false;
       });
     } else {
@@ -130,10 +154,11 @@ function requestGet(vueObj, url, params = {}, successFun) {
         type: 'error', message: data.msg
       });
     }
+  }).catch(e => {
   });
 }
 
-function requestPost(vueObj, url, params = {}, successFun) {
+function requestPost(vueObj, url, params = {}, successFun, errorFun) {
   Axios({
     url: _global.backUrl + url,
     method: "post",
@@ -149,13 +174,18 @@ function requestPost(vueObj, url, params = {}, successFun) {
       vueObj.$message({
         type: 'error', message: data.msg
       });
+      if (errorFun) {
+        errorFun();
+      }
     }
+  }).catch(e => {
   });
 }
 
 export default {
   searching,
   showDetail,
+  showCopy,
   removeById,
   save,
   requestGet,

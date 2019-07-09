@@ -1,5 +1,6 @@
 import Axios from "axios";
 import store from "@/store";
+import {Message} from 'element-ui';
 
 const service = Axios.create({
   withCredentials: true,
@@ -20,6 +21,14 @@ service.interceptors.response.use(response => {
       store.dispatch('clearLoginInfo')
     }
     return response
-  }, error => Promise.reject(error)
-)
+  }, error => {
+    Message({
+      showClose: true,
+      message: error.response.data.msg,
+      type: 'error'
+    });
+    return Promise.reject(error.response);
+  }
+);
+
 export default service

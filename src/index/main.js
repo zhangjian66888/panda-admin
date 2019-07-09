@@ -6,7 +6,6 @@ import App from "./App.vue";
 import router from "./router";
 import store from "@/store";
 import PanelTag from '@/components/PanelTag.vue'
-import Axios from 'axios' ;
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);

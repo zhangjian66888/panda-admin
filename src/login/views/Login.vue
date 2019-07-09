@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="24" class="pd-panel-login-title"> 登录框</el-col>
     </el-row>
-    <el-form label-width="80px" :model="loginInfo" :rules="rules" ref="loginInfo" class="pd-login-form"  @keyup.enter.native="submitForm('loginInfo')">
+    <el-form label-width="80px" :model="loginInfo" :rules="rules" ref="loginInfo" class="pd-login-form" @keyup.enter.native="submitForm('loginInfo')">
       <el-form-item label="账号" prop="username">
         <el-input v-model="loginInfo.username"></el-input>
       </el-form-item>
@@ -63,7 +63,7 @@
           if (valid) {
             _util.requestPost(this, '/panda/core/login', this.loginInfo, (data) => {
               this.saveLoginInfo(data);
-            });
+            }, () => this.createVCode());
           } else {
             this.createVCode();
             return false;
