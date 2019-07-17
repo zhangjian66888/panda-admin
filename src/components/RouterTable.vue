@@ -64,12 +64,10 @@
   }
 
   function dynamicRouter(permissions) {
-    console.log("aaaaaaaaaaaaaaaaa", permissions);
     let hadRouters = routers.filter(item => {
       return permissions.indexOf(item.path) > -1;
     });
     const tmp = new Vue({router});
-    console.log("bbbbbbbbbbbbbbbbbb", hadRouters);
     tmp.$router.addRoutes(hadRouters);
     tmp.$router.beforeEach((to, from, next) => {
       if (!checkAccessToken() || permissions.indexOf(to.path) < 0) {
