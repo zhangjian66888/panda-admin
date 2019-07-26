@@ -50,11 +50,16 @@
       }
     },
     mounted() {
-      store.dispatch('checkToken').then(data => {
-        if (data) {
-          location.href = "/";
-        }
-      });
+      let callback = _util.getUrlKey("callback");
+      if (callback) {
+        console.log("callback url", callback);
+      } else {
+        store.dispatch('checkToken').then(data => {
+          if (data) {
+            location.href = "/";
+          }
+        });
+      }
       this.createVCode();
     },
     methods: {
