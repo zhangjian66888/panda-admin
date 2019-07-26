@@ -182,6 +182,10 @@ function requestPost(vueObj, url, params = {}, successFun, errorFun) {
   });
 }
 
+function getUrlKey (name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null
+}
+
 export default {
   searching,
   showDetail,
@@ -189,7 +193,8 @@ export default {
   removeById,
   save,
   requestGet,
-  requestPost
+  requestPost,
+  getUrlKey
 }
 
 

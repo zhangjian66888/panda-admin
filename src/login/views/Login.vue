@@ -1,7 +1,8 @@
 <template>
   <div class="pd-panel-login">
     <el-row>
-      <el-col :span="24" class="pd-panel-login-title"> 登录框</el-col>
+      <el-col :span="24" class="pd-panel-login-title"> 登录框
+      </el-col>
     </el-row>
     <el-form label-width="80px" :model="loginInfo" :rules="rules" ref="loginInfo" class="pd-login-form" @keyup.enter.native="submitForm('loginInfo')">
       <el-form-item label="账号" prop="username">
@@ -59,11 +60,27 @@
     methods: {
       ...mapMutations(['saveLoginInfo']),
       submitForm(formName) {
+        let callback = _util.getUrlKey("callback");
+        let level = _util.getUrlKey("level");
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            _util.requestPost(this, '/panda/core/login', this.loginInfo, (data) => {
-              this.saveLoginInfo(data);
-            }, () => this.createVCode());
+            _util.requestPost(this, '/panda/core/login',
+              {callback: callback, level: level, ...this.loginInfo},
+              (data) => {
+                if (data.callback) {
+                  let href = data.callback;
+                  if (data.level && data.level == 'high') {
+                    href = href + "?timeCode=" + data.timeCode;
+                  } else {
+                    href = href + "?token=" + data.accessToken;
+                  }
+                  console.log("callback is ", href);
+                  location.href = href;
+                } else {
+                  this.saveLoginInfo(data);
+                }
+
+              }, () => this.createVCode());
           } else {
             this.createVCode();
             return false;
