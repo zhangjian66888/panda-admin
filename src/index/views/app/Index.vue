@@ -107,7 +107,7 @@
     </el-dialog>
 
 
-    <el-dialog title="授权框" :visible.sync="grantDialogVisible" class="pd-large-dialog" center>
+    <el-dialog title="授权框" :visible.sync="grantDialogVisible" class="pd-middle-dialog" center>
       <Grant ref="myGrant"
              :app-code="currentAppCode"
              :owner-types="appOwnerTypes"/>
