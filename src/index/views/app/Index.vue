@@ -63,6 +63,7 @@
           <template slot-scope="scope">
             <el-button @click="showEditDialog(scope.row.id)" type="text" size="small">编辑</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small">删除</el-button>
+            <el-button @click="grant(scope.row)" type="text" size="small">授权</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -104,11 +105,19 @@
         <el-button type="primary" @click="save" v-bind:disabled="saveBtnDisable">确 定</el-button>
       </div>
     </el-dialog>
+
+
+    <el-dialog title="授权框" :visible.sync="grantDialogVisible" class="pd-large-dialog" center>
+      <Grant ref="myGrant"
+             :app-code="currentAppCode"
+             :owner-types="appOwnerTypes"/>
+    </el-dialog>
   </div>
 </template>
 <script>
   import _util from '@/assets/js/util';
   import _selectItem from '@/components/SelectItem.vue';
+  import Grant from './Grant.vue';
 
   export default {
     data() {
@@ -119,6 +128,7 @@
         secretUrl: '/panda/core/app/secrets',
         detailUrl: '/panda/core/app/detail',
         flushSecretUrl: '/panda/core/app/flushSecret',
+        listOnwersUrl: '/panda/core/app/listOwners',
         searchDto: {},
         editDto: {},
         records: [],
@@ -134,10 +144,19 @@
         },
         pagination: {current: 1, pageSize: 20, total: 0},
         sortInfo: {sortField: null, sortOrder: null},
+        grantDialogVisible: false,
+        currentAppCode: null,
+        appOwnerTypes: [],
+        ownerTags: [],
+
       }
+    },
+    components: {
+      Grant
     },
     created: function () {
       _selectItem.businessLineSelectItem(this);
+      _selectItem.staticSelectItem(this, "appOwnerType");
     },
     methods: {
       search() {
@@ -194,6 +213,15 @@
       flushSecret(val) {
         _util.requestPost(this, this.flushSecretUrl, {appCode: val.appCode, envProfile: val.envProfile, envCode: val.envCode}, (data) => {
           this.$set(val, 'secret', data);
+        });
+      },
+      grant(val) {
+        this.currentAppCode = val.appCode;
+        this.grantDialogVisible = true;
+        _util.requestGet(this, this.listOnwersUrl, {appCode: val.appCode}, (data) => {
+          this.ownerTags = data ? data : [];
+
+          this.$refs.myGrant.handlerTags(this.ownerTags);
         });
       }
     }

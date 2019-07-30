@@ -9,8 +9,7 @@
         :remote-method="loadUser"
         :loading="loading"
         @change="selectedChanage"
-        @blur="selectedBlur"
-    >
+        @blur="selectedBlur">
       <el-option
           v-for="item in users"
           :key="item.value"
