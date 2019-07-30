@@ -160,7 +160,7 @@
     padding: 0px;
   }
 
-  .pd-main .el-main:after {
+  .pd-main:after {
     content: '';
     display: block;
     width: 100%;

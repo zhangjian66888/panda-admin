@@ -16,7 +16,7 @@
       }
     },
     mounted: function () {
-      _util.requestGet(this, '/panda/core/permissions', {}, (data) => {
+      _util.requestGet(this, '/panda/core/resources', {}, (data) => {
         this.menusList = data.menuItems;
         RouterTable.dynamicRouter(this.menusList.map(item => item.url));
         this.pset(data.permissions);
