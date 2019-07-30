@@ -35,7 +35,7 @@
 
   function groupSelectItem(obj, params = {}, all = false) {
     _util.requestGet(obj,
-      "/panda/core/selectItem/group", {"all": all},
+      "/panda/core/selectItem/group", {"all": all, ...params},
       (data) => {
         obj.groups = data;
       });
@@ -49,5 +49,4 @@
     envSelectItem,
     groupSelectItem,
   }
-
 </script>
