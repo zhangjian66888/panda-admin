@@ -168,6 +168,6 @@
     position: absolute;
     background: url("../assets/images/home-bg.png");
     opacity: 0.02;
-
+    z-index: -100;
   }
 </style>
