@@ -170,4 +170,8 @@
     opacity: 0.02;
     z-index: -100;
   }
+
+  .pd-main .el-container{
+    margin-bottom: 60px;
+  }
 </style>

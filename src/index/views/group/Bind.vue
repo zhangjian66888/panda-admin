@@ -101,7 +101,7 @@
         });
         if (!binded) {
           _util.requestPost(this, this.saveRoleUrl, {groupId: this.groupId, roleId: val.id}, (data) => {
-            this.selectedTags.push({value: val.id, label: val.roleName});
+            this.selectedTags.push({value: val.id, label: val.roleName + "(" + val.appName + ")"});
           });
         }
       },
