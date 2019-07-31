@@ -50,6 +50,7 @@
             <el-button @click="showCopyDialog(scope.row.id)" type="text" size="small" v-if="phas('USER_COPY')">复制</el-button>
             <el-button @click="remove(scope.row.id)" type="text" size="small" v-if="phas('USER_DELETE')">删除</el-button>
             <el-button @click="bind(scope.row)" type="text" size="small" v-if="phas('USER_BIND')">绑定</el-button>
+            <el-button @click="resetPasswd(scope.row.id)" type="text" size="small" v-if="phas('USER_RESET_PASSWD')">重置</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -142,6 +143,7 @@
         detailUrl: '/panda/core/user/detail',
         copyUrl: '/panda/core/user/copy',
         roleUrl: '/panda/core/user/roles',
+        resetPasswdUrl: '/panda/core/user/reset/passwd/',
         searchDto: {},
         editDto: {},
         records: [],
@@ -232,6 +234,19 @@
           this.selectedTags = data ? data : [];
         });
         _selectItem.appSelectItem(this, {businessLineId: val.businessLineId});
+      },
+      resetPasswd(id) {
+        this.$confirm('确定重置密码，是否继续?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          _util.requestPost(this, this.resetPasswdUrl + id);
+        }).catch((e) => {
+          this.$message({
+            type: 'info', message: '已取消重置'
+          });
+        });
       }
     }
   }

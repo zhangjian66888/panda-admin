@@ -47,7 +47,8 @@ function showDetail(vueObj, id, successFun) {
         type: 'error', message: data.msg
       });
     }
-  }).catch(e=>{});
+  }).catch(e => {
+  });
 }
 
 function showCopy(vueObj, id, successFun) {
@@ -167,6 +168,9 @@ function requestPost(vueObj, url, params = {}, successFun, errorFun) {
   }).then(response => {
     let data = response.data;
     if (data.code == 0) {
+      vueObj.$message({
+        type: 'success', message: data.msg
+      });
       if (successFun) {
         successFun(data.data);
       }
@@ -179,10 +183,13 @@ function requestPost(vueObj, url, params = {}, successFun, errorFun) {
       }
     }
   }).catch(e => {
+    /*vueObj.$message({
+      type: 'error', message: e.data
+    });*/
   });
 }
 
-function getUrlKey (name) {
+function getUrlKey(name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null
 }
 
