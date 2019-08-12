@@ -115,7 +115,7 @@
       grantPremission(val) {
         let granted = false;
         this.selectedTags.forEach((tag, index) => {
-          if (tag.id == val.id) {
+          if (tag.value == val.id) {
             this.$message({type: 'error', message: "请勿重复添加"});
             granted = true;
           }
