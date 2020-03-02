@@ -13,7 +13,7 @@
         <el-input v-model="searchDto.appName"></el-input>
       </el-form-item>
       <el-form-item label="业务线">
-        <el-select v-model="searchDto.businessLine" clearable filterable>
+        <el-select v-model="searchDto.businessLineId" clearable filterable>
           <el-option
               v-for="item in businessLines"
               :key="item.id"
