@@ -3,32 +3,35 @@ import store from "@/store";
 import {Message} from 'element-ui';
 
 const service = Axios.create({
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json; charset=utf-8'
-  }
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+    }
 });
 service.interceptors.request.use(config => {
-  const token = store.state.accessToken;
-  if (token) {
-    config.headers['Authorization'] = token;
-  }
-  return config
+    const token = store.state.accessToken;
+    if (token) {
+        config.headers['Authorization'] = token;
+    }
+    return config
 }, error => Promise.reject(error));
 
 service.interceptors.response.use(response => {
-    if (response.data && response.data.code === 401) { // 401, token失效
-      store.dispatch('clearLoginInfo')
+        if (response.data && response.data.code === 401) { // 401, token失效
+            store.commit('clearLoginInfo')
+        }
+        return response
+    }, error => {
+        if (error.response.status == 401) {
+            store.commit('clearLoginInfo')
+        }
+        Message({
+            showClose: true,
+            message: error.response.data,
+            type: 'error'
+        });
+        return Promise.reject(error.response);
     }
-    return response
-  }, error => {
-    Message({
-      showClose: true,
-      message: error.response.data,
-      type: 'error'
-    });
-    return Promise.reject(error.response);
-  }
 );
 
 export default service
